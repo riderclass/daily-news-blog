@@ -1,7 +1,8 @@
 <template>
   <div class='about'>
-    <h1 class="maintitle-nav">Blog page</h1>
-  <div class="options-box">
+    <h1 class="maintitle-nav">Favorite Posts</h1>
+  <div v-if="this.$store.state.favPosts.length > 0">
+       <div class="options-box">
   <form class="uk-search uk-search-default">
   <span uk-search-icon></span>
 <input class="uk-search-input" v-model="searchReq" type="search" placeholder="Поиск..."/>
@@ -16,10 +17,10 @@
         {{ option.name }}</option>
     </select>
     </div>
-  <div class="postBox">
-    <div class='post' v-for='post in this.sortedAndSearchedPosts' :key='post.id'>
-      <h2 @click='$router.push({ path: `/posts/${post.id}` })' class="size">{{ post.title }}</h2>
-        <img :src="'https://loremflickr.com/640/360/' + post.id" rel="preload">
+     <div class="postBox">
+    <div class='post' v-for='post in sortedAndSearchedPosts' :key='post.id'>
+      <h2 class="size">{{ post.title }}</h2>
+        <img :src="'https://loremflickr.com/640/360/' + post.id">
       <p class="truncate-text">{{ post.body }}</p>
       <div class="btn-block">
       <button
@@ -30,22 +31,21 @@
       </button>
         <button
         @click='addLike(post)'
-        :class="{
-        'favorite-page': post.like === true
-         }"
-        class='like-btn'
+        class='uk-button uk-button-default'
       >
-      <i class="gg-heart"></i>
+       <i class="gg-trash"></i>
       </button>
       </div>
     </div>
-  </div>
+    </div>
     <my-pagination
-      :totalPages='this.$store.state.totalNumber'
+      :totalPages='this.pageCount'
       :perPage='6'
-      :currentPage='this.$store.state.currentNum'
+      :currentPage='this.currentPage'
       @pagechanged='onPageChange'
     />
+    </div>
+    <div class="empty-fav" v-else>Избранное пока не добавлено..</div>
   </div>
 </template>
 <script>
@@ -60,7 +60,6 @@ export default {
   setup () {
     const store = useStore()
     onMounted(() => {
-      store.dispatch('fetchPosts', store.state.currentNum)
     })
 
     return {
@@ -71,7 +70,7 @@ export default {
   },
   data () {
     return {
-      currentPage: this.$store.state.currentNum,
+      currentPage: 1,
       searchReq: '',
       selectedSort: ''
     }
@@ -79,13 +78,11 @@ export default {
   methods: {
     onPageChange (page) {
       this.currentPage = page
-      this.$store.dispatch('fetchPosts', page)
-      this.$store.commit('changeCurrentNum', page)
     }
   },
   computed: {
     sortedPosts () {
-      return [...this.$store.state.posts].sort((post1, post2) =>
+      return [...this.paginatedData].sort((post1, post2) =>
         post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
       )
     },
@@ -93,16 +90,33 @@ export default {
       return this.sortedPosts.filter((post) =>
         post.title.toLowerCase().includes(this.searchReq.toLowerCase())
       )
+    },
+    pageCount () {
+      const l = this.$store.state.favPosts.length
+      const s = 6
+      return Math.ceil(l / s)
+    },
+    paginatedData () {
+      const start = (this.currentPage - 1) * 6
+      const end = start + 6
+      return this.$store.state.favPosts.slice(start, end)
     }
   }
 }
 </script>
 <style>
+.empty-fav {
+    margin-top:120px;
+}
 .postBox {
   grid-template-columns: 30% 30% 30%;
   display: grid;
   gap: 2rem;
   margin-bottom: 40px;
+}
+.maintitle-nav {
+  font-family: 'Libre Baskerville', serif;
+  text-align: left;
 }
 .options-box {
   display: flex;
@@ -110,19 +124,6 @@ export default {
 }
 .btn-block {
   display:flex;
-}
-.pagination-item button {
-  background: white;
-  color:black;
-  cursor: pointer;
-  text-transform: uppercase;
-}
-.uk-search-default {
-    flex: 7;
-    min-width: 240px;
-}
-.uk-select {
-        flex: 2;
 }
 .size {
   white-space: nowrap; /* Отменяем перенос текста */
@@ -151,41 +152,5 @@ export default {
 
 .truncate-text p:first-letter {
     text-transform: uppercase;
-}
-
-.maintitle-nav {
-  font-family: 'Libre Baskerville', serif;
-  text-align: left;
-}
-.like-btn {
-    background: white;
-    border: 1px solid whitesmoke;
-    cursor: pointer;
-    color: #676767;
-    margin: 0;
-    border: none;
-    overflow: visible;
-    font: inherit;
-    color: inherit;
-    text-transform: none;
-    -webkit-appearance: none;
-    border-radius: 0;
-    display: inline-block;
-    box-sizing: border-box;
-    padding: 0 30px;
-    vertical-align: middle;
-    font-size: .875rem;
-    line-height: 38px;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: .1s ease-in-out;
-    transition-property: color,background-color,border-color;
-    border: 1px solid #ededed;
-}
-.favorite-page {
-  background: #ff7474 !important;
-  color: white !important;
-  border: 1px solid #ff7474 !important;
 }
 </style>

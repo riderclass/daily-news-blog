@@ -1,0 +1,21 @@
+@media (max-width:480px)  {
+    .content-box {
+        width:100% !important;
+    }
+    .postBox {
+        grid-template-columns: 100% !important;
+        display: grid;
+        gap: 2rem;
+        margin-bottom: 40px;
+    }
+    nav {
+        width: 100%;
+        text-align: center;
+        padding: 30px 0 30px 0 !important;
+    }
+    .btn-block {
+    display: flex;
+    margin: 0 auto;
+    width: 200px;
+    }
+}
