@@ -3,9 +3,7 @@
 
 <p>Blog posts are loaded via a fetch request from the json placeholder website. Images for posts are generated randomly.</p>
 
-<p>The working version of the project lies on a free firebase hosting: <strong><a target="_blank" href="https://daily-news-792f2.web.app/"></a></strong></p>
-
-# my-veux
+<p>The working version of the project lies on a free firebase hosting: <strong><a target="_blank" href="https://daily-news-792f2.web.app/">https://daily-news-792f2.web.app/</a></strong></p>
 
 ## Project setup
 ```
