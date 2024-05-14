@@ -35,7 +35,7 @@
          }"
         class='like-btn'
       >
-      <i class="gg-heart"></i>
+      Добавить
       </button>
       </div>
     </div>
