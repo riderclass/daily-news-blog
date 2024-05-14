@@ -33,7 +33,7 @@
         @click='addLike(post)'
         class='uk-button uk-button-default'
       >
-       <i class="gg-trash"></i>
+       Удалить
       </button>
       </div>
     </div>
